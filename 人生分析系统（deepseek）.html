@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生分析系统</title>
+    <style>
+        :root {
+            --primary: #89C4FF;
+            --secondary: #A3E4D7;
+        }
+
+        body {
+            font-family: '微软雅黑', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(137,196,255,0.3);
+        }
+
+        #analyzeBtn {
+            background: linear-gradient(45deg, #6B8DD6, #8E37D7);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+
+        #analyzeBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            animation: colorFlow 4s infinite alternate;
+        }
+
+        .red-theme { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: #fff; }
+        .blue-theme { background: linear-gradient(45deg, #4b6cb7, #182848); color: #fff; }
+        .green-theme { background: linear-gradient(45deg, #00b09b, #96c93d); color: #fff; }
+        .white-theme { background: linear-gradient(45deg, #ffffff, #f8f9fa); color: #333; }
+
+        .glow-text {
+            text-shadow: 0 0 10px currentColor;
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            50% { text-shadow: 0 0 20px currentColor; }
+        }
+
+        .dynamic-border {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dynamic-border::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                #ff6b6b, #4b6cb7, #00b09b, #ffffff);
+            z-index: -1;
+            animation: borderAnim 4s linear infinite;
+        }
+
+        @keyframes borderAnim {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ 人生分析系统 ✨</h1>
+        
+        <div class="form-group">
+            <label>性别：</label>
+            <select id="gender">
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>年龄：</label>
+            <input type="number" id="age" min="0" max="120">
+        </div>
+
+        <div class="form-group">
+            <label>近期购买的物品（用逗号分隔）：</label>
+            <textarea id="items" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>人生格言：</label>
+            <input type="text" id="motto">
+        </div>
+
+        <button id="analyzeBtn" onclick="analyzeLife()">开始人生分析</button>
+
+        <div id="resultSection" class="result-section">
+            <!-- 分析结果将通过JavaScript动态插入 -->
+        </div>
+    </div>
+
+    <script>
+        function analyzeLife() {
+            // 获取用户输入
+            const userData = {
+                gender: document.getElementById('gender').value,
+                age: document.getElementById('age').value,
+                items: document.getElementById('items').value.split(','),
+                motto: document.getElementById('motto').value
+            };
+
+            // 显示加载动画
+            const btn = document.getElementById('analyzeBtn');
+            btn.innerHTML = '<div class="loader"></div> 分析中...';
+            btn.disabled = true;
+
+            // 模拟AI分析（实际应用中需接入真实AI接口）
+            setTimeout(() => {
+                showResults(userData);
+                btn.innerHTML = '开始人生分析';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        function showResults(data) {
+            const resultSection = document.getElementById('resultSection');
+            resultSection.style.display = 'block';
+            
+            // 生成分析结果模板
+            const resultHTML = `
+                <div class="result-card red-theme dynamic-border">
+                    <h2 class="glow-text">🔥 活力指数分析</h2>
+                    <p>根据您的年龄${data.age}岁和消费偏好...</p>
+                </div>
+
+                <div class="result-card blue-theme dynamic-border">
+                    <h2 class="glow-text">🧠 智慧维度解析</h2>
+                    <p>从您的人生格言"${data.motto}"可以看出...</p>
+                </div>
+
+                <div class="result-card green-theme dynamic-border">
+                    <h2 class="glow-text">🌱 成长潜力评估</h2>
+                    <p>您近期购买的${data.items.length}件物品显示...</p>
+                </div>
+
+                <div class="result-card white-theme dynamic-border">
+                    <h2>💡 人生优化建议</h2>
+                    <p>综合各项指标，建议您...</p>
+                </div>
+            `;
+
+            resultSection.innerHTML = resultHTML;
+            
+            // 添加动态效果
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.addEventListener('mouseover', () => {
+                    card.style.transform = 'scale(1.02)';
+                });
+                card.addEventListener('mouseout', () => {
+                    card.style.transform = 'scale(1)';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
